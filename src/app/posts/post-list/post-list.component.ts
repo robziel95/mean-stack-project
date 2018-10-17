@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Post } from '../post.model';
 import { PostsService } from '../posts.service';
 import { Subscription } from 'rxjs';
+import { post } from 'selenium-webdriver/http';
 
 @Component({
   selector: 'app-post-list',
@@ -21,7 +22,7 @@ export class PostListComponent implements OnInit, OnDestroy {
   constructor (public postsService: PostsService) {}
 
   ngOnInit() {
-    this.posts = this.postsService.getPosts();
+    this.postsService.getPosts();
 
     //this.postsSub is used to avoid memmory leaks
     this.postsSub = this.postsService.getPostUpdateListener().subscribe(
@@ -31,6 +32,10 @@ export class PostListComponent implements OnInit, OnDestroy {
         this.posts = postsChanged;
       }
     );
+  }
+
+  onDelete(postId: string){
+    this.postsService.deletePost(postId);
   }
 
   ngOnDestroy() {
