@@ -3,6 +3,7 @@ import { Post } from './post.model';
 import { Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,7 @@ export class PostsService {
   private postsUpdated = new Subject<Post[]>();
   //private so we can emit from this file, but can not emit from anywhere else
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private router: Router) { }
 
   getPosts(){
     this.http.get<{message: string, posts: any}>('http://localhost:3000/api/posts')
@@ -44,14 +45,17 @@ export class PostsService {
   addPost(title: string, content: string){
     const post: Post = {id: null, title: title, content: content};
     this.http.post<{message: string, postId: string}>('http://localhost:3000/api/posts', post)
-      .subscribe(responseData => {
+      .subscribe(
+        responseData => {
           const id = responseData.postId;
           post.id = id;
           //this will execute only when we have success response
           this.posts.push(post);
           this.postsUpdated.next([...this.posts]);
           //Emit event (subject), that the posts were updated, and send copy of posts with it
-      }
+
+          this.router.navigate(["/"]);
+        }
       );
   }
 
@@ -70,6 +74,8 @@ export class PostsService {
         updatedPosts[oldPostIndex] = post;
         this.posts = updatedPosts;
         this.postsUpdated.next([...this.posts]);
+
+        this.router.navigate(["/"]);
       }
     );
   }
