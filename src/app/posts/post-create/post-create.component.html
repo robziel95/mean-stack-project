@@ -1,19 +1,20 @@
 <mat-card>
-  <form (submit)="onAddPost(postForm)" #postForm="ngForm">
+  <form (submit)="onSavePost(postForm)" #postForm="ngForm">
     <mat-form-field>
         <input matInput type="text"
         name="title"
-        ngModel
+        [ngModel]="post?.title"
         required
         minlength="3"
         placeholder= "Post title"
         #title="ngModel">
+        <!-- ? in input (post?.title) checks if post exist, before trying to reach .title -->
         <mat-error *ngIf="title.invalid">Please enter a post title</mat-error>
       </mat-form-field>
       <mat-form-field>
         <textarea matInput
         name="content"
-        ngModel
+        [ngModel]="post?.content"
         required
         placeholder="Post content"
         #content="ngModel">
