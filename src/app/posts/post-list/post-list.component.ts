@@ -11,6 +11,7 @@ import { post } from 'selenium-webdriver/http';
 })
 export class PostListComponent implements OnInit, OnDestroy {
   posts: Post[] = [];
+  isLoading = false;
   private postsSub: Subscription;
 
   // postService: PostsService;
@@ -22,6 +23,7 @@ export class PostListComponent implements OnInit, OnDestroy {
   constructor (public postsService: PostsService) {}
 
   ngOnInit() {
+    this.isLoading = true;
     this.postsService.getPosts();
 
     //this.postsSub is used to avoid memmory leaks
@@ -29,6 +31,7 @@ export class PostListComponent implements OnInit, OnDestroy {
       //set up listener to check if posts were updated, it has 3 arguments next, error and complete:
       // fuction which is executed when new data is emited, func. when error, func. when observable is completed
       (postsChanged: Post[]) => {
+        this.isLoading = false;
         this.posts = postsChanged;
       }
     );
