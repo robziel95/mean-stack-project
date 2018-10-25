@@ -1,9 +1,36 @@
 const express = require("express");
+const multer = require("multer");
+//multer extracts files like body parser extracts json
 const Post = require('../models/post');
 const router = express.Router();
 
+const MIME_TYPE_MAP = {
+  //extract input file extension
+  'image/png': 'png',
+  'image/jpeg': 'jpeg',
+  'image/jpg': 'jpg'
+};
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const isValid = MIME_TYPE_MAP[file.mimetype];
+    let error = new Error('Invalid mime type');
+    if (isValid) {
+      error = null; //do not throw error
+    }
+    //cb - callback
+    cb(error, "backend/images");
+    //path relative to server.js file
+  },
+  filename: (req, file, cb) => {
+    const name = file.originalname.toLowerCase().split(' ').join('-');
+    const ext = MIME_TYPE_MAP[file.mimetype];
+    cb(null, name + '-' + Date.now() + '.' + ext)
+  }
+});
+
 //npm install --save body-parser
-router.post("", (req, res, next) => {
+router.post("", multer({storage: storage}).single("image"), (req, res, next) => {
   const post = new Post({
     title: req.body.title,
     content: req.body.content
