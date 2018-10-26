@@ -68,6 +68,36 @@ router.put("/:id", multer({storage: storage}).single("image"), (req, res, next) 
   });
 });
 
+router.get('', (req, res, next) => {
+  req.query;//those are parameters send in url after "?" sign, each parameter is separated by &
+  const pageSize = +req.query.pagesize;//we retrieve value from query named pageSize, if we dont pass it, its value will be undefined
+  const currentPage = Number(req.query.page); //+ at the begginning cats to number, same as Number method
+  const postQuery = Post.find();
+  //postQuery will be executed after we call then
+  let fetchedPosts;
+  if (pageSize && currentPage){
+    //if we get parameters, we modify postQuery
+    postQuery
+    .skip(pageSize * (currentPage - 1)) //skip first n elements
+    .limit(pageSize); //display only declared amount of items
+
+  }
+  postQuery
+    .then(documents => {
+      fetchedPosts = documents;
+      return Post.count();
+    })
+    .then(
+      count => {
+        res.status(200).json({
+          message: 'Posts fetched succesfully',
+          posts: fetchedPosts,
+          maxPosts: count
+        })
+      }
+    );
+})
+
 router.get("/:id", (req, res, next) => {
   Post.findById(req.params.id).then(post => {
     if (post) {
@@ -76,15 +106,6 @@ router.get("/:id", (req, res, next) => {
       res.status(404).json({message: 'Post not fount!'});
     }
   })
-})
-
-router.get('', (req, res, next) => {
-  Post.find().then(documents => {
-    res.status(200).json({
-      message: 'Posts fetched succesfully',
-      posts: documents
-    });
-  });
 })
 
 router.delete("/:id", (req, res, next) => {

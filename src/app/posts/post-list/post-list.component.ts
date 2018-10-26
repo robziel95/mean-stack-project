@@ -3,6 +3,7 @@ import { Post } from '../post.model';
 import { PostsService } from '../posts.service';
 import { Subscription } from 'rxjs';
 import { post } from 'selenium-webdriver/http';
+import { PageEvent } from '@angular/material';
 
 @Component({
   selector: 'app-post-list',
@@ -12,6 +13,10 @@ import { post } from 'selenium-webdriver/http';
 export class PostListComponent implements OnInit, OnDestroy {
   posts: Post[] = [];
   isLoading = false;
+  totalPosts = 0;
+  postsPerPage = 2;
+  currentPage = 1;
+  pageSizeOptions = [1, 2, 5, 10];
   private postsSub: Subscription;
 
   // postService: PostsService;
@@ -24,21 +29,34 @@ export class PostListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.isLoading = true;
-    this.postsService.getPosts();
+    this.postsService.getPosts(this.postsPerPage, this.currentPage);
 
     //this.postsSub is used to avoid memmory leaks
     this.postsSub = this.postsService.getPostUpdateListener().subscribe(
       //set up listener to check if posts were updated, it has 3 arguments next, error and complete:
       // fuction which is executed when new data is emited, func. when error, func. when observable is completed
-      (postsChanged: Post[]) => {
+      (postData: {posts: Post[], postCount: number}) => {
         this.isLoading = false;
-        this.posts = postsChanged;
+        this.totalPosts = postData.postCount;
+        this.posts = postData.posts;
       }
     );
   }
 
+  onChangedPage(pageData: PageEvent){
+    this.isLoading = true;
+    this.currentPage = pageData.pageIndex + 1;//starts at 0, need to increment
+    this.postsPerPage = pageData.pageSize;
+    this.postsService.getPosts(this.postsPerPage, this.currentPage);
+  }
+
   onDelete(postId: string){
-    this.postsService.deletePost(postId);
+    this.isLoading = true;
+    this.postsService.deletePost(postId).subscribe(
+      () => {
+        this.postsService.getPosts(this.postsPerPage, this.currentPage);
+      }
+    );
   }
 
   ngOnDestroy() {

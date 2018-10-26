@@ -6,6 +6,10 @@ mat-spinner {
   margin: auto;
 }
 
+mat-paginator{
+  margin-top: 1rem;
+}
+
 .post-image{
   text-align: center;
 }
