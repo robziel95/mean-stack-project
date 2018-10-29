@@ -8,10 +8,11 @@ import { AppComponent } from './app.component';
 import { PostCreateComponent } from './posts/post-create/post-create.component';
 import { HeaderComponent } from './header/header.component';
 import { PostListComponent } from './posts/post-list/post-list.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { LoginComponent } from './auth/login/login.component';
 import { SignupComponent } from './auth/signup/signup.component';
+import { AuthInterceptor } from './auth/auth-interceptor';
 
 
 @NgModule({
@@ -39,7 +40,8 @@ import { SignupComponent } from './auth/signup/signup.component';
       MatPaginatorModule,
       HttpClientModule
    ],
-   providers: [],
+   //Add interceptor which uses custom interceptor, multi is because we can have many interceptors in app, so it will not overwrite existing ones
+   providers: [{provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}],
    bootstrap: [
       AppComponent
    ]

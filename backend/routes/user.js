@@ -52,6 +52,7 @@ router.post("/signup", (req, res, next) => {
         });
       }
       const token = jwt.sign({email: fetchedUser.email, userId: fetchedUser._id}, 'secret_this-should_be_longer', { expiresIn: "1h" });
+      console.log(token);
       res.status(200).json({
         token: token
       });
