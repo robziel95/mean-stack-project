@@ -54,7 +54,13 @@ router.post("",
           imagePath: createdPost.imagePath
         }
       });
-    });
+    }).catch(
+      error => {
+        res.status(500).json({
+          message: "Creating a post failed!"
+        });
+      }
+    );
 });
 //patch is also possibe to use, in order to update
 router.put("/:id",
@@ -80,7 +86,14 @@ multer({storage: storage}).single("image"), (req, res, next) => {
       res.status(401).json({message: 'Not authorized!'});
     }
 
-  });
+  })
+  .catch(
+    error => {
+      res.status(500).json({
+        message: "Couldn't update post!"
+      });
+    }
+  )
 });
 
 router.get('', (req, res, next) => {
@@ -110,8 +123,14 @@ router.get('', (req, res, next) => {
           maxPosts: count
         })
       }
+    ).catch(
+      error => {
+        res.status(500).json({
+          message: "Fetching post failed!"
+        });
+      }
     );
-})
+});
 
 router.get("/:id", (req, res, next) => {
   Post.findById(req.params.id).then(post => {
@@ -120,8 +139,14 @@ router.get("/:id", (req, res, next) => {
     } else {
       res.status(404).json({message: 'Post not fount!'});
     }
-  })
-})
+  }).catch(
+    error => {
+      res.status(500).json({
+        message: "Fetching post failed!"
+      });
+    }
+  );
+});
 
 router.delete("/:id", checkAuth, (req, res, next) => {
   Post.deleteOne({ _id: req.params.id, creator: req.userData.userId}).then(
@@ -132,7 +157,13 @@ router.delete("/:id", checkAuth, (req, res, next) => {
         res.status(401).json({message: 'Not authorized!'});
       }
     }
-  )
+  ).catch(
+    error => {
+      res.status(500).json({
+        message: "Fetching post failed!"
+      });
+    }
+  );
 });
 
 module.exports = router;
