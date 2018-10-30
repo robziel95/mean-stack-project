@@ -9,7 +9,7 @@ const app = express();
 // EnyhIPVvwPUkeqeE
 mongoose.connect(
   //"mongodb+srv://robz:EnyhIPVvwPUkeqeE@cluster0-zpzps.mongodb.net/node-angular?retryWrites=true"
-  "mongodb://localhost:27017/meanstack"
+  "mongodb://localhost:27017/test2"
   )
 .then(
   () => {
