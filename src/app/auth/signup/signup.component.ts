@@ -11,6 +11,7 @@ import { Subscription } from 'rxjs';
 export class SignupComponent implements OnInit, OnDestroy {
   isLoading = false;
   private authStatusSub: Subscription;
+
   constructor(public authService: AuthService) {}
 
   ngOnInit() {

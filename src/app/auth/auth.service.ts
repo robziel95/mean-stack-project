@@ -22,10 +22,10 @@ export class AuthService {
     this.http.post("http://localhost:3000/api/user/signup", authData)
     .subscribe(()=>{
         this.router.navigate(["/"]);
+      }, error => {
+        this.authStatusListener.next(false);
       }
-    ), error => {
-      this.authStatusListener.next(false);
-    };
+    );
   }
 
   login(email: string, password: string){
@@ -47,7 +47,8 @@ export class AuthService {
           this.saveAuthData(loginToken, expirationDate, this.userId)
           this.router.navigate(['/']);
         }
-
+      }, error => {
+        this.authStatusListener.next(false);
       }
     );
   }
