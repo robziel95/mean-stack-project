@@ -7,7 +7,10 @@ const userRoutes = require("./routes/user");
 
 const app = express();
 // EnyhIPVvwPUkeqeE
-mongoose.connect("mongodb+srv://robz:EnyhIPVvwPUkeqeE@cluster0-zpzps.mongodb.net/node-angular?retryWrites=true")
+mongoose.connect(
+  //"mongodb+srv://robz:EnyhIPVvwPUkeqeE@cluster0-zpzps.mongodb.net/node-angular?retryWrites=true"
+  "mongodb://localhost:27017/meanstack"
+  )
 .then(
   () => {
     console.log("connected to database");

@@ -57,16 +57,17 @@ router.post("/signup", (req, res, next) => {
         { expiresIn: "1h" }
       );
 
-      console.log(token);
+      //pass info to forntend
       res.status(200).json({
         token: token,
-        expiresIn: 3600
+        expiresIn: 3600,
+        userId: fetchedUser._id
         //seconds
       });
     })
     .catch(
       err => {
-        res.status(401).json({
+        return res.status(401).json({
           message: "Auth failed"
         })
       }
