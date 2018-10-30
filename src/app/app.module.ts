@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { MatInputModule, MatCardModule, MatButtonModule, MatToolbarModule, MatExpansionModule, MatProgressSpinnerModule, MatPaginatorModule } from '@angular/material';
+import { MatInputModule, MatCardModule, MatButtonModule, MatToolbarModule, MatExpansionModule, MatProgressSpinnerModule, MatPaginatorModule, MatDialogModule } from '@angular/material';
 
 import { AppComponent } from './app.component';
 import { PostCreateComponent } from './posts/post-create/post-create.component';
@@ -13,6 +13,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { LoginComponent } from './auth/login/login.component';
 import { SignupComponent } from './auth/signup/signup.component';
 import { AuthInterceptor } from './auth/auth-interceptor';
+import { ErrorInterceptor } from './error-interceptor';
+import { ErrorComponent } from './error/error.component';
 
 
 @NgModule({
@@ -22,8 +24,8 @@ import { AuthInterceptor } from './auth/auth-interceptor';
       HeaderComponent,
       PostListComponent,
       LoginComponent,
-      SignupComponent
-
+      SignupComponent,
+      ErrorComponent
    ],
    imports: [
       BrowserModule,
@@ -38,12 +40,17 @@ import { AuthInterceptor } from './auth/auth-interceptor';
       MatExpansionModule,
       MatProgressSpinnerModule,
       MatPaginatorModule,
-      HttpClientModule
+      HttpClientModule,
+      MatDialogModule
    ],
    //Add interceptor which uses custom interceptor, multi is because we can have many interceptors in app, so it will not overwrite existing ones
-   providers: [{provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}],
+   providers: [
+     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
+     {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true}
+    ],
    bootstrap: [
       AppComponent
-   ]
+   ],
+   entryComponents: [ErrorComponent]
 })
 export class AppModule { }
